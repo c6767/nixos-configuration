@@ -39,11 +39,11 @@
     i18n.extraLocaleSettings = {
       LC_MESSAGES = "zh_CN.UTF-8";
       LC_TIME = "zh_CN.UTF-8";
-                              }
+                              };
     
   
 
-#   fonts.fontDir.enable = true;
+   fonts.fontDir.enable = true;
     fonts.fonts = with pkgs; [
       noto-fonts
       noto-fonts-cjk-sans

@@ -43,7 +43,9 @@
     
   
 
-fonts.fontDir.enable = true;
+fonts={
+    fontDir.enable = true;
+    }"
     fonts.fonts = with pkgs; [
       noto-fonts
       noto-fonts-cjk-sans

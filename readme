@@ -1,0 +1,10 @@
+使用前必须将channel改到国内
+替换 channel 为科大源（nixos 22.05）
+直接在命令终端（konsole）输入
+#nix-channel --add https://mirrors.ustc.edu.cn/nix-channels/nixos-22.05 nixos
+#nix-channel --update
+###也可以    
+#nix-channel --add https://mirrors.tuna.tsinghua.edu.cn/nix-channels/nixos-22.05 nixos
+#nix-channel --update
+
+

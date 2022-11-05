@@ -41,9 +41,8 @@
       LC_TIME = "zh_CN.UTF-8";
                               }
     
-   fonts = {
-    fontDir.enable = true;
-    fonts = with pkgs; [
+   fonts.fontDir.enable = true;
+    fonts.fonts = with pkgs; [
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif
@@ -51,7 +50,6 @@
       source-code-pro
      # hack-font
       jetbrains-mono ]; 
-          };
 
 i18n.inputMethod = {
     # enabled = "fcitx5";

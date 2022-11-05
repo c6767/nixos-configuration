@@ -30,8 +30,16 @@
  
  # Select internationalisation properties.
  # i18n.defaultLocale = "en_US.UTF-8";   ### utf8——〉 UTF-8
-  i18n.defaultLocale = "zh_CN.UTF-8";
+   i18n = {
+    consoleFont = "Lat2-Terminus16";
+    consoleKeyMap = "us";
+    defaultLocale = "en_US.UTF-8";
+  };
     
+    i18n.extraLocaleSettings = {
+      LC_MESSAGES = "zh_CN.UTF-8";
+      LC_TIME = "zh_CN.UTF-8";
+                              }
     
    fonts = {
     fontDir.enable = true;
@@ -41,7 +49,7 @@
       noto-fonts-cjk-serif
       sarasa-gothic  #更纱黑体
       source-code-pro
-      hack-font
+     # hack-font
       jetbrains-mono ]; };
 
 i18n.inputMethod = {
@@ -57,8 +65,7 @@ i18n.inputMethod = {
     ibus.engines = with pkgs.ibus-engines; [
       libpinyin
       rime
-    ];
-  };
+    ];  };
 
 
 ## thanks for zenway ##
@@ -71,7 +78,7 @@ i18n.inputMethod = {
       "https://mirror.sjtu.edu.cn/nix-channels/store"
     # "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
     # "https://mirrors.ustc.edu.cn/nix-channels/store"
-    ];
+                  ];
 
     trusted-users = ["@wheel"];
 
@@ -79,14 +86,13 @@ i18n.inputMethod = {
     experimental-features = [
       "nix-command"
       "flakes"
-    ];
-  };
+    ];  };
 
   nixpkgs.config = {
     allowUnfree = true;
     # allowBroken = true;
     # allowUnsupportedSystem = true;
-  };
+               };
 
 
 
@@ -125,7 +131,7 @@ i18n.inputMethod = {
     # use the example session manager (no others are packaged yet so this is enabled by default,
     # no need to redefine it in your config for now)
     #media-session.enable = true;
-  };
+  # };
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
@@ -155,10 +161,10 @@ i18n.inputMethod = {
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
+ # environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #  wget
-  ];
+#  ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

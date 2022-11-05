@@ -75,8 +75,8 @@ i18n.inputMethod = {
     auto-optimise-store = true;
     # 使用镜像源
     substituters = [
-      "https://mirror.sjtu.edu.cn/nix-channels/store"
-    # "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
+    #  "https://mirror.sjtu.edu.cn/nix-channels/store"
+     "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
     # "https://mirrors.ustc.edu.cn/nix-channels/store"
                   ];
 

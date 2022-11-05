@@ -7,4 +7,20 @@
 #nix-channel --add https://mirrors.tuna.tsinghua.edu.cn/nix-channels/nixos-22.05 nixos
 #nix-channel --update
 
+==
+flake git
 
+# 下载你的仓库
+git clone xxxxx
+
+# 如果分区有变动的话，需要重新生成一份硬件配置
+nixos-generate-config --root /mnt
+# 复制新配置覆盖掉旧的硬件配置
+cp /mnt/etc/nixos/hardware-configuration.nix ./nixosconfig/hosts/newos/
+# 安装系统
+nixos-install --flake ./nixosconfig#newos
+
+作者：zenway
+链接：https://zhuanlan.zhihu.com/p/463469697
+来源：知乎
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。

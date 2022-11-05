@@ -50,7 +50,8 @@
       sarasa-gothic  #更纱黑体
       source-code-pro
      # hack-font
-      jetbrains-mono ]; };
+      jetbrains-mono ]; 
+          };
 
 i18n.inputMethod = {
     # enabled = "fcitx5";

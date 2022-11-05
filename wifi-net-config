@@ -1,0 +1,117 @@
+
+https://www.meiwen.com.cn/subject/tjdqzftx.html
+
+
+a. 无线网连接
+
+[larluo@nixos-larluo:~]$ wpa_passphrase 'hl03863' '@hl03863' | sudo tee -a  /etc/wpa_supplicant.conf
+network={
+        ssid="hl03863"
+        #psk="@hl03863"
+        psk=2bf4950c9cbffda0ad36655ebc9c3f5bfeb8d660ca644f889cb5aa68b5451f4c
+}
+
+[larluo@nixos-larluo:~]$ sudo systemctl restart wpa_supplicant
+
+[larluo@nixos-larluo:~]$ ping www.baidu.com
+PING www.a.shifen.com (61.135.169.125) 56(84) bytes of data.
+64 bytes from 61.135.169.125 (61.135.169.125): icmp_seq=1 ttl=53 time=43.9 ms
+64 bytes from 61.135.169.125 (61.135.169.125): icmp_seq=2 ttl=53 time=44.8 ms
+^C
+--- www.a.shifen.com ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 2ms
+rtt min/avg/max/mdev = 43.903/44.343/44.784/0.488 ms
+
+
+b. socks5代理连接
+安装showsocks客户端以及proxychains
+
+[larluo@nixos-larluo:~/my-env]$ nix-env -i shadowsocks-libev
+installing 'shadowsocks-libev-3.2.0'
+these paths will be fetched (0.96 MiB download, 5.03 MiB unpacked):
+  /nix/store/1wbc6xkdc4259kpmf1dgjcy8ddifxbj1-mbedtls-2.12.0
+  /nix/store/4yg7ybi2p5ryb65p258z8f1n5j6cd0l5-shadowsocks-libev-3.2.0
+  /nix/store/5kl4kani4y3203pzvapsv3grnpaw0vr2-c-ares-1.14.0
+  /nix/store/8dxq8vfyikvs21gxhgvnc19ivk8iwhm3-libev-4.24
+copying path '/nix/store/5kl4kani4y3203pzvapsv3grnpaw0vr2-c-ares-1.14.0' from 'https://cache.nixos.org'...
+copying path '/nix/store/8dxq8vfyikvs21gxhgvnc19ivk8iwhm3-libev-4.24' from 'https://cache.nixos.org'...
+copying path '/nix/store/1wbc6xkdc4259kpmf1dgjcy8ddifxbj1-mbedtls-2.12.0' from 'https://cache.nixos.org'...
+copying path '/nix/store/4yg7ybi2p5ryb65p258z8f1n5j6cd0l5-shadowsocks-libev-3.2.0' from 'https://cache.nixos.org'...
+building '/nix/store/cw5fv5bxvm4ayd5jg6kvg9dgkp6yaq1z-user-environment.drv'...
+created 488 symlinks in user environment
+
+[larluo@nixos-larluo:~/my-env]$ ss-local -s hk2.wormholex.online -p 13173 -k **** -m aes-256-cfb  -b 0.0.0.0 -l 1080 -v
+ 2018-10-16 09:31:16 INFO: initializing ciphers... aes-256-cfb
+
+[larluo@nixos-larluo:~/my-env]$ curl -L --socks5 127.0.0.1:1080 www.google.com
+curl: (52) Empty reply from server
+
+[larluo@nixos-larluo:~/my-env]$ nix-env -i proxychains
+installing 'proxychains-4.2.0'
+these paths will be fetched (0.01 MiB download, 0.05 MiB unpacked):
+  /nix/store/3li08ycawivkb7p4x1y5p3xnq7ryrykm-proxychains-4.2.0
+copying path '/nix/store/3li08ycawivkb7p4x1y5p3xnq7ryrykm-proxychains-4.2.0' from 'https://cache.nixos.org'...
+building '/nix/store/fnpjl7dzxpgcn1pvrip3z24rqdbbs6r8-user-environment.drv'...
+created 492 symlinks in user environment
+
+[larluo@nixos-larluo:~/my-env]$ mkdir -p ~/.proxychains
+
+[larluo@nixos-larluo:~/my-env]$ cat ~/.proxychains/proxychains.conf 
+strict_chain
+proxy_dns 
+remote_dns_subnet 224
+tcp_read_time_out 15000
+tcp_connect_time_out 8000
+localnet 127.0.0.0/255.0.0.0
+quiet_mode
+
+[ProxyList]
+socks5  127.0.0.1 1080
+
+[larluo@nixos-larluo:~/my-env]$ proxychains4 curl www.google.com
+[proxychains] config file found: /home/larluo/.proxychains/proxychains.conf
+[proxychains] preloading /nix/store/3li08ycawivkb7p4x1y5p3xnq7ryrykm-proxychains-4.2.0/lib/libproxychains4.so
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
+<TITLE>302 Moved</TITLE></HEAD><BODY>
+<H1>302 Moved</H1>
+The document has moved
+<A HREF="http://www.google.com.hk/url?sa=p&amp;hl=zh-CN&amp;pref=hkredirect&amp;pval=yes&amp;q=http://www.google.com.hk/%3Fgws_rd%3Dcr&amp;ust=1539654127108066&amp;usg=AOvVaw2IC8Yg_R9CxjMH4Ob3T5de">here</A>.
+</BODY></HTML>
+
+c. http/https代理连接
+添加privoxy后台服务转换socks5代理至http/https协议.
+
+[larluo@nixos-larluo:~/my-env]$ cat /etc/nixos/configuration.nix
+...
+...
+  services.privoxy.enable = true ;
+  services.privoxy.listenAddress = "0.0.0.0:8118" ;
+  services.privoxy.extraConfig = ''
+    forward-socks5 / 0.0.0.0:1080 .
+  '' ;
+...
+...
+
+[larluo@nixos-larluo:~/my-env]$ sudo nixos-rebuild switch
+building Nix...
+building the system configuration...
+NOT restarting the following changed units: systemd-fsck@dev-disk-by\x2duuid-9BA4\x2d18FE.service
+activating the configuration...
+setting up /etc...
+reloading user units for larluo...
+setting up tmpfiles
+reloading the following units: dbus.service
+restarting the following units: polkit.service
+the following new units were started: privoxy.service
+
+[larluo@nixos-larluo:~/my-env]$ curl www.google.com
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
+<TITLE>302 Moved</TITLE></HEAD><BODY>
+<H1>302 Moved</H1>
+The document has moved
+<A HREF="http://www.google.com.hk/url?sa=p&amp;hl=zh-CN&amp;pref=hkredirect&amp;pval=yes&amp;q=http://www.google.com.hk/%3Fgws_rd%3Dcr&amp;ust=1539654967800281&amp;usg=AOvVaw1YzCBU5M0fuEUpG0W-aTnQ">here</A>.
+</BODY></HTML>
+
+运行chromium --proxy-server=http://127.0.0.1:8118 后打开浏览器即可
+nixos.png
+youtube.png 
